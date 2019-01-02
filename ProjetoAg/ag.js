@@ -71,7 +71,8 @@ window.onload = function () {
     }
     function Level1() {
 
-
+        Background()
+        Player()
         //random angle between 0 and 360
         let grad = Math.random() * 360
         let theta = grad * Math.PI / 180;
@@ -87,16 +88,11 @@ window.onload = function () {
         let ball1 = new Balls(canvas.width / 2, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "red")
         let ball2 = new Balls()
         balls.push(ball1)
-        function animate() {
-
-            Background()
-            Player()
             
-            ball1.draw()
-            ball1.update()
-            window.requestAnimationFrame(animate);
-        }
-        animate();
+        balls[0].draw()
+        balls[0].update()
+            
+        
     }
     //Nivel 2
     function Level2() {
