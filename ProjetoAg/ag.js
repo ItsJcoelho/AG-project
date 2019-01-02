@@ -49,7 +49,7 @@ window.onload = function () {
 
             }
 
-            if (this.y - this.r < 0 || this.y + this.r > canvas.height) {
+            if (this.y - this.r < 0 || this.y + this.r > canvas.height - groundY) {
                 this.vY = -this.vY;
             }
 
@@ -67,62 +67,86 @@ window.onload = function () {
             ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI)
             ctx.fill();
         }
-        //Nivel 1
+        
     }
     function Level1() {
-
-        Background()
-        Player()
         //random angle between 0 and 360
         let grad = Math.random() * 360
         let theta = grad * Math.PI / 180;
 
-        let vel = 3;
-        console.log();
+        let vel = 7;
         //horizontal and vertical velocities
         let deltaX = vel * Math.cos(theta);
         let deltaY = vel * Math.sin(theta);
 
+        Background()
+        Player()
 
         balls = []
         let ball1 = new Balls(canvas.width / 2, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "red")
-        let ball2 = new Balls()
+        
         balls.push(ball1)
-            
-        balls[0].draw()
-        balls[0].update()
+        timer = window.setInterval(LevelAnimate, 1000 / 60)
+        
+
             
         
     }
-    //Nivel 2
-    function Level2() {
+    function LevelAnimate() {
+        console.log("ola")
         Background()
         Player()
-        balls = []
-        let ball1 = new Balls(canvas.width / 2 - canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, "blue")
-        balls.push(ball1)
-        let ball2 = new Balls(canvas.width / 2 + canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, "blue")
-        balls.push(ball2)
+
         balls.forEach(ball => {
             ball.draw()
         });
+        balls.forEach(ball => {
+            ball.update()
+        });
+
+    }
+    //Nivel 2
+    function Level2() {
+        //random angle between 0 and 360
+        let grad = Math.random() * 360
+        let theta = grad * Math.PI / 180;
+
+        let vel = 7;
+        //horizontal and vertical velocities
+        let deltaX = vel * Math.cos(theta);
+        let deltaY = vel * Math.sin(theta);
+        
+        Background()
+        Player()
+        balls = []
+        let ball1 = new Balls(canvas.width / 2 - canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "blue")
+        balls.push(ball1)
+        let ball2 = new Balls(canvas.width / 2 + canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "blue")
+        balls.push(ball2)
+        timer = window.setInterval(LevelAnimate, 1000 / 60)
     }
     //Nivel 3
     function Level3() {
         Background()
         Player()
 
+        let grad = Math.random() * 360
+        let theta = grad * Math.PI / 180;
+
+        let vel = 7;
+        //horizontal and vertical velocities
+        let deltaX = vel * Math.cos(theta);
+        let deltaY = vel * Math.sin(theta);
+
 
         balls = []
-        let ball1 = new Balls(canvas.width / 2, canvas.height / 2 - canvas.height / 3, raioBig, "green")
+        let ball1 = new Balls(canvas.width / 2, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "green")
         balls.push(ball1)
-        let ball2 = new Balls(canvas.width / 2 - canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, "green")
+        let ball2 = new Balls(canvas.width / 2 - canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "green")
         balls.push(ball2)
-        let ball3 = new Balls(canvas.width / 2 + canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, "green")
+        let ball3 = new Balls(canvas.width / 2 + canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "green")
         balls.push(ball3)
-        balls.forEach(ball => {
-            ball.draw()
-        });
+        timer = window.setInterval(LevelAnimate, 1000 / 60)
     }
     //Player drawing function
     function Player() {
@@ -153,21 +177,22 @@ window.onload = function () {
     }
 
 
-    level1.addEventListener("click", Level1)
-    level2.addEventListener("click", Level2)
-    level3.addEventListener("click", Level3)
+    
     //timer = window.setInterval(Level1, 10)
     level1.addEventListener("click", function () {
         window.clearInterval(timer)
-        timer = window.setInterval(Level1, 1000 / 60)
+        
     })
     level2.addEventListener("click", function () {
         window.clearInterval(timer)
-        timer = window.setInterval(Level2, 1000 / 60)
+        
     })
     level3.addEventListener("click", function () {
         window.clearInterval(timer)
-        timer = window.setInterval(Level3, 1000 / 60)
+        
     })
+    level1.addEventListener("click", Level1)
+    level2.addEventListener("click", Level2)
+    level3.addEventListener("click", Level3)
 
 }
