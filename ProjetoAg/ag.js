@@ -29,6 +29,7 @@ window.onload = function () {
     let velocityPlayer = 10
     let arrowX = canvas.width / 2
     let arrowY = playerY
+    let arrowCorfirm = true
     //Balls Drawing Function
     function Balls(x, y, r, vX, vY, color) {
         this.x = x
@@ -37,6 +38,7 @@ window.onload = function () {
         this.vX = vX;
         this.vY = vY;
         this.color = color
+        this.active = true
 
         //update 
 
@@ -82,6 +84,9 @@ window.onload = function () {
         }
         this.update = function () {
             this.distance-=10
+            if(this.y + this.distance <= 0){
+                this.active = false
+            }
         }
     }
     function Level1() {
@@ -108,7 +113,6 @@ window.onload = function () {
         
     }
     function LevelAnimate() {
-        console.log("ola")
         Background()
         Player()
 
@@ -124,6 +128,41 @@ window.onload = function () {
         hooks.forEach(hook => {
             hook.update()
         });
+        for (let i = 0; i < hooks.length; i++) {
+            if(!hooks[i].active){
+                hooks.splice(i,1)
+                arrowCorfirm = true
+            }
+            
+        }
+        for (let i = 0; i < balls.length; i++) {
+            if(!balls[i].active){
+                balls.splice(i,1)
+            }
+        }
+        for (let i = 0; i < hooks.length; i++) {
+            for (let j = 0; j < balls.length; j++) {
+                let calc = Math.sqrt(Math.pow(hooks[i].x - balls[j].x,2)+Math.pow((hooks[i].y+hooks[i].distance) - balls[j].y,2))
+                if(calc <= raioBig){
+                    let newBall1 = new Balls(balls[j].x, balls[j].y, raioMedium, balls[j].vX, balls[j].vY, balls[j.color])
+                    let newBall2 = new Balls(balls[j].x, balls[j].y, raioMedium, balls[j].vX, balls[j].vY, balls[j.color])
+                    balls.push(newBall1)
+                    balls.push(newBall2)
+                    hooks[i].active = false
+                    balls[j].active = false
+                 }
+                /*if(calc <= raioMedium){
+                    balls[j].color = "black"
+                    hooks[i].active = false
+                }
+                if(calc <= raioSmall){
+                    balls[j].color = "black"
+                    hooks[i].active = false
+                }*/
+                
+            }
+            
+        }
 
     }
     //Nivel 2
@@ -184,10 +223,11 @@ window.onload = function () {
     }
     //disparar
     function shoot() {
-        console.log("sapce")
-        let hook = new Hook(playerX + playerWidth/2,playerY)
-        hooks.push(hook)
-        console.log(hooks)
+        if(arrowCorfirm){
+            let hook = new Hook(playerX + playerWidth/2,playerY)
+            hooks.push(hook)
+            arrowCorfirm = false
+        }
     }
     //Obter Eventos do teclado
     function KeyPress(evt) {
