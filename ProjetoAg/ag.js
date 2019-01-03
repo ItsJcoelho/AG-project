@@ -13,7 +13,7 @@ window.onload = function () {
 
     canvas.width = width;
     canvas.height = height;
-
+    let hooks = []
     let balls = []
     let raioBig = 100
     let raioMedium = 40
@@ -69,6 +69,21 @@ window.onload = function () {
         }
         
     }
+    function Hook(x,y) {
+        this.x = x
+        this.y = y
+        this.distance = 0
+        this.active = true
+        this.draw = function () {
+            ctx.beginPath()
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x, this.y + this.distance);
+            ctx.stroke()
+        }
+        this.update = function () {
+            this.distance-=10
+        }
+    }
     function Level1() {
         //random angle between 0 and 360
         let grad = Math.random() * 360
@@ -102,6 +117,12 @@ window.onload = function () {
         });
         balls.forEach(ball => {
             ball.update()
+        });
+        hooks.forEach(hook => {
+            hook.draw()
+        });
+        hooks.forEach(hook => {
+            hook.update()
         });
 
     }
@@ -160,6 +181,13 @@ window.onload = function () {
         ctx.fillRect(0, 0, canvas.width, canvas.height)
         ctx.fillStyle = "lightgreen"
         ctx.fillRect(0, canvas.height - groundY, canvas.width, groundY)
+    }
+    //disparar
+    function shoot() {
+        console.log("sapce")
+        let hook = new Hook(playerX + playerWidth/2,playerY)
+        hooks.push(hook)
+        console.log(hooks)
     }
     //Obter Eventos do teclado
     function KeyPress(evt) {
