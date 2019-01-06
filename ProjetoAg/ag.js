@@ -13,6 +13,7 @@ window.onload = function () {
 
     canvas.width = width;
     canvas.height = height;
+    let lifes = 5
     let hooks = []
     let balls = []
     let raioBig = 100
@@ -21,8 +22,9 @@ window.onload = function () {
     let level1 = document.getElementById("level1")
     let level2 = document.getElementById("level2")
     let level3 = document.getElementById("level3")
-    let playerWidth = 40
-    let playerHeight = 40
+    let lifesHtml = document.getElementById("vidas")
+    let playerWidth = 50
+    let playerHeight = 20
     let groundY = 15
     let playerX = canvas.width / 2 - playerWidth
     let playerY = canvas.height - playerHeight - groundY
@@ -30,7 +32,9 @@ window.onload = function () {
     let arrowX = canvas.width / 2
     let arrowY = playerY
     let arrowCorfirm = true
+    
     //Balls Drawing Function
+
     function Balls(x, y, r, vX, vY, color, type) {
         this.x = x;
         this.y = y;
@@ -101,7 +105,7 @@ window.onload = function () {
         //horizontal and vertical velocities
         let deltaX = vel * Math.cos(theta);
         let deltaY = vel * Math.sin(theta);
-
+        lifes = 5
         Background()
         Player()
 
@@ -168,6 +172,21 @@ window.onload = function () {
             }
             
         }
+        for (let i = 0; i < balls.length; i++) {
+            if (balls[i].x >= playerX && balls[i].x <= playerX + playerWidth) {
+                console.log(lifes)
+                if (balls[i].y + balls[i].r >= playerY) {
+                    balls[i].vY = - balls[i].vY
+                    lifes--
+                }
+            }
+            
+        }
+        
+        if(lifes == 0){
+            GameOver()
+        }
+        lifesHtml.innerHTML = `Vidas: ${lifes}`
 
     }
     //Nivel 2
@@ -180,7 +199,7 @@ window.onload = function () {
         //horizontal and vertical velocities
         let deltaX = vel * Math.cos(theta);
         let deltaY = vel * Math.sin(theta);
-        
+        lifes = 5
         Background()
         Player()
         balls = []
@@ -202,7 +221,7 @@ window.onload = function () {
         //horizontal and vertical velocities
         let deltaX = vel * Math.cos(theta);
         let deltaY = vel * Math.sin(theta);
-
+        lifes = 5
 
         balls = []
         let ball1 = new Balls(canvas.width / 2, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "green","big")
@@ -257,7 +276,16 @@ window.onload = function () {
                 shoot();
         }
     }
-
+    function GameOver() {
+        window.clearInterval(timer)
+        ctx.fillStyle = "black"
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        ctx.font = "30px Comic Sans MS";
+        ctx.fillStyle = "red";
+        ctx.textAlign = "center";
+        ctx.fillText("Game Over", canvas.width/2, canvas.height/2);
+        ctx.fillText("Click on the level to restart", canvas.width/2, canvas.height/2+40);
+    }
 
     
     //timer = window.setInterval(Level1, 10)
