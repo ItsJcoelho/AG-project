@@ -16,8 +16,8 @@ window.onload = function () {
     let hooks = []
     let balls = []
     let raioBig = 100
-    let raioMedium = 40
-    let raioSmall = 10
+    let raioMedium = 50
+    let raioSmall = 25
     let level1 = document.getElementById("level1")
     let level2 = document.getElementById("level2")
     let level3 = document.getElementById("level3")
@@ -31,14 +31,15 @@ window.onload = function () {
     let arrowY = playerY
     let arrowCorfirm = true
     //Balls Drawing Function
-    function Balls(x, y, r, vX, vY, color) {
-        this.x = x
-        this.y = y
-        this.r = r
+    function Balls(x, y, r, vX, vY, color, type) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
         this.vX = vX;
         this.vY = vY;
-        this.color = color
-        this.active = true
+        this.color = color;
+        this.active = true;
+        this.type = type;
 
         //update 
 
@@ -60,7 +61,7 @@ window.onload = function () {
             this.x += this.vX;
             this.y += this.vY;
 
-        }
+        };
 
         //draw
         this.draw = function () {
@@ -78,6 +79,8 @@ window.onload = function () {
         this.active = true
         this.draw = function () {
             ctx.beginPath()
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 3
             ctx.moveTo(this.x, this.y);
             ctx.lineTo(this.x, this.y + this.distance);
             ctx.stroke()
@@ -103,7 +106,7 @@ window.onload = function () {
         Player()
 
         balls = []
-        let ball1 = new Balls(canvas.width / 2, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "red")
+        let ball1 = new Balls(canvas.width / 2, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "red","big")
         
         balls.push(ball1)
         timer = window.setInterval(LevelAnimate, 1000 / 60)
@@ -128,13 +131,7 @@ window.onload = function () {
         hooks.forEach(hook => {
             hook.update()
         });
-        for (let i = 0; i < hooks.length; i++) {
-            if(!hooks[i].active){
-                hooks.splice(i,1)
-                arrowCorfirm = true
-            }
-            
-        }
+        eliminateHarpoon()
         for (let i = 0; i < balls.length; i++) {
             if(!balls[i].active){
                 balls.splice(i,1)
@@ -143,22 +140,30 @@ window.onload = function () {
         for (let i = 0; i < hooks.length; i++) {
             for (let j = 0; j < balls.length; j++) {
                 let calc = Math.sqrt(Math.pow(hooks[i].x - balls[j].x,2)+Math.pow((hooks[i].y+hooks[i].distance) - balls[j].y,2))
-                if(calc <= raioBig){
-                    let newBall1 = new Balls(balls[j].x, balls[j].y, raioMedium, balls[j].vX, balls[j].vY, balls[j.color])
-                    let newBall2 = new Balls(balls[j].x, balls[j].y, raioMedium, balls[j].vX, balls[j].vY, balls[j.color])
-                    balls.push(newBall1)
-                    balls.push(newBall2)
+                if(calc <= raioBig && balls[j].type == "big"){
+                    
+                    //let newBall2 = new Balls(balls[j].x, balls[j].y, raioMedium, balls[j].vX, balls[j].vY, balls[j.color])
+                    balls.push(new Balls(balls[j].x, balls[j].y, raioMedium, - balls[j].vX, balls[j].vY, balls[j].color,"medium"))
+                    //balls.push(newBall2)
+                    //balls[j].active = false
+                    balls[j].r = raioMedium
+                    balls[j].type = "medium"
+                    hooks[i].active = false
+                    eliminateHarpoon()
+                 }
+                if(calc <= raioMedium && balls[j].type == "medium"){
+                    balls.push(new Balls(balls[j].x, balls[j].y, raioSmall, - balls[j].vX, balls[j].vY, balls[j].color,"small"))
+                    balls[j].r = raioSmall
+                    balls[j].type = "small"
+                    hooks[i].active = false
+                    eliminateHarpoon()
+                }
+                if(calc <= raioSmall && balls[j].type == "small"){
+                    console.log("colidiu3")
                     hooks[i].active = false
                     balls[j].active = false
-                 }
-                /*if(calc <= raioMedium){
-                    balls[j].color = "black"
-                    hooks[i].active = false
+                    
                 }
-                if(calc <= raioSmall){
-                    balls[j].color = "black"
-                    hooks[i].active = false
-                }*/
                 
             }
             
@@ -179,9 +184,9 @@ window.onload = function () {
         Background()
         Player()
         balls = []
-        let ball1 = new Balls(canvas.width / 2 - canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "blue")
+        let ball1 = new Balls(canvas.width / 2 - canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "blue","big")
         balls.push(ball1)
-        let ball2 = new Balls(canvas.width / 2 + canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "blue")
+        let ball2 = new Balls(canvas.width / 2 + canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "blue","big")
         balls.push(ball2)
         timer = window.setInterval(LevelAnimate, 1000 / 60)
     }
@@ -200,11 +205,11 @@ window.onload = function () {
 
 
         balls = []
-        let ball1 = new Balls(canvas.width / 2, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "green")
+        let ball1 = new Balls(canvas.width / 2, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "green","big")
         balls.push(ball1)
-        let ball2 = new Balls(canvas.width / 2 - canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "green")
+        let ball2 = new Balls(canvas.width / 2 - canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "green","big")
         balls.push(ball2)
-        let ball3 = new Balls(canvas.width / 2 + canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "green")
+        let ball3 = new Balls(canvas.width / 2 + canvas.width / 4, canvas.height / 2 - canvas.height / 3, raioBig, deltaX, deltaY, "green","big")
         balls.push(ball3)
         timer = window.setInterval(LevelAnimate, 1000 / 60)
     }
@@ -216,7 +221,7 @@ window.onload = function () {
     }
     //backG
     function Background() {
-        ctx.fillStyle = "white"
+        ctx.fillStyle = "black"
         ctx.fillRect(0, 0, canvas.width, canvas.height)
         ctx.fillStyle = "lightgreen"
         ctx.fillRect(0, canvas.height - groundY, canvas.width, groundY)
@@ -227,6 +232,15 @@ window.onload = function () {
             let hook = new Hook(playerX + playerWidth/2,playerY)
             hooks.push(hook)
             arrowCorfirm = false
+        }
+    }
+    function eliminateHarpoon() {
+        for (let i = 0; i < hooks.length; i++) {
+            if(!hooks[i].active){
+                hooks.splice(i,1)
+                arrowCorfirm = true
+            }
+            
         }
     }
     //Obter Eventos do teclado
